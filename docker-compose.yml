@@ -1,0 +1,19 @@
+networks:
+  picpay-challenge-nt:
+    driver: bridge
+
+services:
+  picpay-challenge-db:
+    container_name: picpay-challenge-db
+    image: postgres:16-alpine
+    env_file:
+      - .env
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - picpay-challenge-db:/var/lib/postgresql/data
+    networks:
+      - picpay-challenge-nt
+
+volumes:
+  picpay-challenge-db:

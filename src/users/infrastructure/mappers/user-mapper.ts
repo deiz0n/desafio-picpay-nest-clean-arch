@@ -11,8 +11,6 @@ export class UserMapper {
       role: user.role,
       cpf: user.cpf,
       cnpj: user.cnpj,
-      createdAt: null,
-      updatedAt: null,
     };
   }
 

@@ -14,14 +14,14 @@ export const USER_REPOSITORY_TOKEN = 'USER_REPOSITORY_TOKEN';
       useClass: UserRepositoryImpl,
     },
     {
-      provide: CreateUserService,
+      provide: 'CreateUserUseCase',
       useFactory: (userRepepository: UserRepositoryImpl) => {
         return new CreateUserService(userRepepository);
       },
       inject: [USER_REPOSITORY_TOKEN],
     },
     {
-      provide: GetAllUsersService,
+      provide: 'GetAllUsersUseCase',
       useFactory: (userRepository: UserRepositoryImpl) => {
         return new GetAllUsersService(userRepository);
       },

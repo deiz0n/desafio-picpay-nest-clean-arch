@@ -2,6 +2,7 @@ import { Global, Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
+import * as schema from './schema';
 
 @Global()
 @Module({
@@ -14,7 +15,7 @@ import postgres from 'postgres';
         if (!databaseUrl) throw new Error('DATABASE_URL not defined');
 
         const client = postgres(databaseUrl);
-        return drizzle(client, { schema: {} });
+        return drizzle(client, { schema });
       },
     },
   ],

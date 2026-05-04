@@ -4,6 +4,7 @@ import { ConfigModule } from '@nestjs/config';
 import { UsersModule } from './users/users.module';
 import { DrizzleModule } from './drizzle/drizzle.module';
 import { TransactionsModule } from './transactions/transactions.module';
+import { AccountsModule } from './accounts/accounts.module';
 
 @Module({
   imports: [
@@ -11,6 +12,7 @@ import { TransactionsModule } from './transactions/transactions.module';
     UsersModule,
     DrizzleModule,
     TransactionsModule,
+    AccountsModule,
   ],
   controllers: [AppController],
   providers: [],

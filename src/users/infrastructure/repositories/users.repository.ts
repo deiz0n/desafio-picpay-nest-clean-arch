@@ -11,6 +11,7 @@ export interface IUserRepository {
   findByEmail(email: string): Promise<UserResponse | null>;
   findByCpf(cpf: string): Promise<UserResponse | null>;
   findByCnpj(cnpj: string): Promise<UserResponse | null>;
+  findById(id: string): Promise<UserResponse | null>;
   findAll(page?: number, pageSize?: number): Promise<UserResponse[]>;
 }
 
@@ -51,6 +52,15 @@ export class UserRepositoryImpl implements IUserRepository {
       .select()
       .from(userModel)
       .where(eq(userModel.cnpj, cnpj));
+
+    return result ? UserMapper.toResponse(result) : null;
+  }
+
+  async findById(id: string): Promise<UserResponse | null> {
+    const [result] = await this.db
+      .select()
+      .from(userModel)
+      .where(eq(userModel.id, id));
 
     return result ? UserMapper.toResponse(result) : null;
   }

@@ -17,10 +17,15 @@ import {
   AccountsModule,
 } from '../accounts/accounts.module';
 import { DRIZZLE } from '../drizzle/drizzle.module';
+import {
+  ITransactionRepository,
+  TransactionRepositoryImpl,
+} from './infrastructure/repositories/transaction.repository';
 
 export const HTTP_CIRCUIT_BREAKER_TOKEN = 'HTTP_CIRCUIT_BREAKER_TOKEN';
 export const TRANSACTION_AUTHORIZATION_GATEWAY_TOKEN =
   'TRANSACTION_AUTHORIZATION_GATEWAY_TOKEN';
+export const TRANSACTION_REPOSITORY_TOKEN = 'TRANSACTION_REPOSITORY_TOKEN';
 
 @Module({
   imports: [UsersModule, AccountsModule],
@@ -31,18 +36,24 @@ export const TRANSACTION_AUTHORIZATION_GATEWAY_TOKEN =
       useClass: HttpCircuitBreaker,
     },
     {
+      provide: TRANSACTION_REPOSITORY_TOKEN,
+      useClass: TransactionRepositoryImpl,
+    },
+    {
       provide: 'SendTransactionUseCase',
       useFactory: (
         userRepepository: IUserRepository,
         accountRepository: AccountsRepositoryImpl,
         transactionAuthorizationGateway: ITransactionAuthorizationGateway,
         db: DrizzleDB,
+        transactionRepository: ITransactionRepository,
       ) => {
         return new SendTransactionService(
           userRepepository,
           accountRepository,
           transactionAuthorizationGateway,
           db,
+          transactionRepository,
         );
       },
       inject: [
@@ -50,6 +61,7 @@ export const TRANSACTION_AUTHORIZATION_GATEWAY_TOKEN =
         ACCOUNT_REPOSITORY_TOKEN,
         TRANSACTION_AUTHORIZATION_GATEWAY_TOKEN,
         DRIZZLE,
+        TRANSACTION_REPOSITORY_TOKEN,
       ],
     },
     {

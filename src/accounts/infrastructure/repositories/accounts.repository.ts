@@ -10,6 +10,7 @@ import { Account } from '../../core/accountEntity';
 import { AccountMapper } from '../mappers/account-mapper';
 
 export interface IAccountsRepository {
+  save(accountEntity: Account): Promise<AccountResponse>;
   findByUserId(userId: string): Promise<AccountResponse | null>;
   findByUserIdLock(
     userId: string,
@@ -19,7 +20,7 @@ export interface IAccountsRepository {
     accountId: string,
     account: Partial<AccountType>,
     transaction?: DrizzleTransaction,
-  ): Promise<AccountType | null>;
+  ): Promise<AccountResponse | null>;
 }
 
 export class AccountsRepositoryImpl implements IAccountsRepository {
@@ -27,6 +28,17 @@ export class AccountsRepositoryImpl implements IAccountsRepository {
     @Inject('DRIZZLE')
     private readonly db: DrizzleDB,
   ) {}
+
+  async save(accountEntity: Account): Promise<AccountResponse> {
+    const account = AccountMapper.toInsert(accountEntity);
+
+    const [result] = await this.db
+      .insert(accountModel)
+      .values(account)
+      .returning();
+
+    return AccountMapper.toResponse(result);
+  }
 
   async findByUserId(userId: string): Promise<AccountResponse | null> {
     const [result] = await this.db

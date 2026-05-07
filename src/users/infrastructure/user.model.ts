@@ -6,6 +6,7 @@ import { pgEnum } from 'drizzle-orm/pg-core';
 import { timestamp } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 import { accountModel } from '../../accounts/infrastructure/accounts.model';
+import { transactionModel } from '../../transactions/infrastructure/transaction.model';
 
 const rolesValues = Object.values(UserRole) as [string, ...string[]];
 
@@ -26,9 +27,15 @@ export const userModel = pgTable('tb_user', {
 export const userSchema = { userModel };
 export type UserType = typeof userModel.$inferInsert;
 
-export const userRelations = relations(userModel, ({ one }) => ({
+export const userRelations = relations(userModel, ({ one, many }) => ({
   account: one(accountModel, {
     fields: [userModel.id],
     references: [accountModel.userId],
+  }),
+  sentTransactions: many(transactionModel, {
+    relationName: 'payer_transactions',
+  }),
+  receivedTransactions: many(transactionModel, {
+    relationName: 'payee_transactions',
   }),
 }));

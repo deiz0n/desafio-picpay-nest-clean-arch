@@ -28,5 +28,6 @@ export const USER_REPOSITORY_TOKEN = 'USER_REPOSITORY_TOKEN';
       inject: [USER_REPOSITORY_TOKEN],
     },
   ],
+  exports: [USER_REPOSITORY_TOKEN],
 })
 export class UsersModule {}

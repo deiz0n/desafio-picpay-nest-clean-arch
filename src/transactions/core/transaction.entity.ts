@@ -1,7 +1,7 @@
-export class TransactionEntity {
+export class Transaction {
   constructor(
-    public readonly payerId: string,
-    public readonly payeeId: string,
-    public readonly amount: number,
+    public payerId: string,
+    public payeeId: string,
+    public amount: number,
   ) {}
 }

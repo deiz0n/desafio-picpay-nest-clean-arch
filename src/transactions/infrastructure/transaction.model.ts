@@ -5,8 +5,12 @@ import { userModel } from '../../drizzle/schema';
 
 export const transactionModel = pgTable('tb_transaction', {
   id: uuid('id').primaryKey().defaultRandom(),
-  payerId: uuid('payer_id').references(() => userModel.id),
-  payeeId: uuid('payee_id').references(() => userModel.id),
+  payerId: uuid('payer_id')
+    .notNull()
+    .references(() => userModel.id),
+  payeeId: uuid('payee_id')
+    .notNull()
+    .references(() => userModel.id),
   amount: integer('amount').notNull(),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').$onUpdate(() => new Date()),

@@ -3,10 +3,16 @@ import { UsersController } from './infrastructure/http/users.controller';
 import { UserRepositoryImpl } from './infrastructure/repositories/users.repository';
 import { CreateUserService } from './application/services/create-user.service';
 import { GetAllUsersService } from './application/services/get-all-users.service';
+import {
+  ACCOUNT_REPOSITORY_TOKEN,
+  AccountsModule,
+} from '../accounts/accounts.module';
+import { AccountsRepositoryImpl } from '../accounts/infrastructure/repositories/accounts.repository';
 
 export const USER_REPOSITORY_TOKEN = 'USER_REPOSITORY_TOKEN';
 
 @Module({
+  imports: [AccountsModule],
   controllers: [UsersController],
   providers: [
     {
@@ -15,10 +21,13 @@ export const USER_REPOSITORY_TOKEN = 'USER_REPOSITORY_TOKEN';
     },
     {
       provide: 'CreateUserUseCase',
-      useFactory: (userRepepository: UserRepositoryImpl) => {
-        return new CreateUserService(userRepepository);
+      useFactory: (
+        userRepepository: UserRepositoryImpl,
+        accountsRepository: AccountsRepositoryImpl,
+      ) => {
+        return new CreateUserService(userRepepository, accountsRepository);
       },
-      inject: [USER_REPOSITORY_TOKEN],
+      inject: [USER_REPOSITORY_TOKEN, ACCOUNT_REPOSITORY_TOKEN],
     },
     {
       provide: 'GetAllUsersUseCase',

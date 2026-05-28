@@ -13,7 +13,7 @@ export class AccountMapper {
   static toResponse(type: AccountType): AccountResponse {
     return {
       id: type.id!,
-      balance: type.balance!,
+      balance: Number((type.balance! / 100).toFixed(2)),
       userId: type.userId,
     };
   }

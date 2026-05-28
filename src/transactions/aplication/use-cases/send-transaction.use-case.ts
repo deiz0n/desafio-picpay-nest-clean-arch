@@ -1,5 +1,5 @@
-import { TransactionEntity } from '../../core/transaction.entity';
+import { Transaction } from '../../core/transaction.entity';
 
 export interface SendTransactionUseCase {
-  execute(transaction: TransactionEntity): Promise<void>;
+  execute(transaction: Transaction): Promise<void>;
 }

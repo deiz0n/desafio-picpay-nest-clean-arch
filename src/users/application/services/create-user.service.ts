@@ -49,7 +49,7 @@ export class CreateUserService implements CreateUserUseCase {
   }
 
   private async createNewAccount(userId: string): Promise<void> {
-    const account = new Account(100, userId);
+    const account = new Account(10000, userId);
     await this.accountsRepository.save(account);
   }
 }

@@ -13,6 +13,7 @@ export interface IUserRepository {
   findByCnpj(cnpj: string): Promise<UserResponse | null>;
   findById(id: string): Promise<UserResponse | null>;
   findAll(page?: number, pageSize?: number): Promise<UserResponse[]>;
+  update(userId: string, user: User): Promise<UserResponse>;
 }
 
 export class UserRepositoryImpl implements IUserRepository {
@@ -79,5 +80,17 @@ export class UserRepositoryImpl implements IUserRepository {
       .offset(offset);
 
     return result.map((user) => UserMapper.toResponse(user));
+  }
+
+  async update(userId: string, user: User): Promise<UserResponse> {
+    const updateData = UserMapper.toInsert(user);
+
+    const [result] = await this.db
+      .update(userModel)
+      .set(updateData)
+      .where(eq(userModel.id, userId))
+      .returning();
+
+    return UserMapper.toResponse(result);
   }
 }

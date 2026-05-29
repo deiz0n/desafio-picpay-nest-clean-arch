@@ -8,6 +8,7 @@ import {
   AccountsModule,
 } from '../accounts/accounts.module';
 import { AccountsRepositoryImpl } from '../accounts/infrastructure/repositories/accounts.repository';
+import { GetUserByIdService } from './application/services/get-user-by-id.service';
 
 export const USER_REPOSITORY_TOKEN = 'USER_REPOSITORY_TOKEN';
 
@@ -33,6 +34,13 @@ export const USER_REPOSITORY_TOKEN = 'USER_REPOSITORY_TOKEN';
       provide: 'GetAllUsersUseCase',
       useFactory: (userRepository: UserRepositoryImpl) => {
         return new GetAllUsersService(userRepository);
+      },
+      inject: [USER_REPOSITORY_TOKEN],
+    },
+    {
+      provide: 'GetUserByIdUseCase',
+      useFactory: (userRepository: UserRepositoryImpl) => {
+        return new GetUserByIdService(userRepository);
       },
       inject: [USER_REPOSITORY_TOKEN],
     },

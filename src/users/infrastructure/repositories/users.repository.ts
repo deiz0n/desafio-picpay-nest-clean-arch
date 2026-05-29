@@ -5,10 +5,12 @@ import { userModel, userSchema } from '../user.model';
 import { UserMapper } from '../mappers/user-mapper';
 import { UserResponse } from '../../core/user-response';
 import { User } from '../../core/user.entity';
+import { UserType } from '../user.model';
 
 export interface IUserRepository {
   save(user: User): Promise<UserResponse>;
   findByEmail(email: string): Promise<UserResponse | null>;
+  findWithPasswordByEmail(email: string): Promise<UserType | null>;
   findByCpf(cpf: string): Promise<UserResponse | null>;
   findByCnpj(cnpj: string): Promise<UserResponse | null>;
   findById(id: string): Promise<UserResponse | null>;
@@ -37,6 +39,15 @@ export class UserRepositoryImpl implements IUserRepository {
       .where(eq(userModel.email, email));
 
     return result ? UserMapper.toResponse(result) : null;
+  }
+
+  async findWithPasswordByEmail(email: string): Promise<UserType | null> {
+    const [result] = await this.db
+      .select()
+      .from(userModel)
+      .where(eq(userModel.email, email));
+
+    return result || null;
   }
 
   async findByCpf(cpf: string): Promise<UserResponse | null> {

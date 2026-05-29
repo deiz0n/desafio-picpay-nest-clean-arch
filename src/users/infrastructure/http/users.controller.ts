@@ -15,9 +15,13 @@ import type { CreateUserUseCase } from '../../core/use-cases/create-user.use-cas
 import type { GetAllUsersUseCase } from '../../core/use-cases/get-all-users.use-case';
 import { CreateUserDto } from '../dtos/CreateUserDto';
 import { PaginationDto } from '../dtos/PaginationDto';
+import { Public } from '../../../auth/infrastructure/decorators/public.decorator';
 import type { UpdateUserUseCase } from '../../core/use-cases/update-user.use-case';
 import type { GetUserByIdUseCase } from 'src/users/core/use-cases/get-user-by-id.use-case';
 import { UpdateUserDto } from '../dtos/UpdateUserDto';
+import { Roles } from 'src/auth/infrastructure/decorators/roles.decorator';
+import { UserRole } from 'src/users/core/user-role.enum';
+import { User } from 'src/users/core/user.entity';
 
 @Controller('users')
 export class UsersController {
@@ -32,6 +36,7 @@ export class UsersController {
     private readonly updateUserUseCase: UpdateUserUseCase,
   ) {}
 
+  @Public()
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() createDto: CreateUserDto) {
@@ -43,6 +48,7 @@ export class UsersController {
     };
   }
 
+  @Roles(UserRole.ADMIN)
   @Get()
   @HttpCode(HttpStatus.OK)
   async getAll(@Query() query: PaginationDto) {
@@ -57,6 +63,7 @@ export class UsersController {
     };
   }
 
+  @Roles(UserRole.ADMIN)
   @Get(':id')
   @HttpCode(HttpStatus.OK)
   async getById(@Param('id', ParseUUIDPipe) id: string) {
@@ -68,13 +75,14 @@ export class UsersController {
     };
   }
 
+  @Roles(UserRole.ADMIN)
   @Put(':id')
   @HttpCode(HttpStatus.OK)
   async update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateDto: UpdateUserDto,
   ) {
-    const result = await this.updateUserUseCase.execute(id, updateDto as any);
+    const result = await this.updateUserUseCase.execute(id, updateDto as User);
     return {
       status: HttpStatus.OK,
       timestamp: new Date().toISOString(),

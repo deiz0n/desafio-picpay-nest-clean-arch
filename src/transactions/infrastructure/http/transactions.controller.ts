@@ -8,6 +8,8 @@ import {
 } from '@nestjs/common';
 import type { SendTransactionUseCase } from '../../aplication/use-cases/send-transaction.use-case';
 import { CreateTransactionDto } from '../dtos/CreateTransactionDto';
+import { Roles } from 'src/auth/infrastructure/decorators/roles.decorator';
+import { UserRole } from 'src/users/core/user-role.enum';
 
 @Controller('transactions')
 export class TransactionsController {
@@ -16,6 +18,7 @@ export class TransactionsController {
     private readonly sendTransactionUseCase: SendTransactionUseCase,
   ) {}
 
+  @Roles(UserRole.CUSTOMER)
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() createDto: CreateTransactionDto) {

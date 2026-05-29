@@ -3,13 +3,26 @@ networks:
     driver: bridge
 
 services:
+  picpay-challenge-api:
+    container_name: picpay-clallenge-api
+    build: .
+    env_file:
+      - .env
+    ports:
+      - '${API_PORT:-3000}:${API_PORT:-3000}'
+    depends_on:
+      - picpay-challenge-db
+    networks:
+      - picpay-challenge-nt
+    command: sh -c "npm run start:dev"
+
   picpay-challenge-db:
     container_name: picpay-challenge-db
     image: postgres:16-alpine
     env_file:
       - .env
     ports:
-      - "${POSTGRES_PORT:-5432}:5432"
+      - '${POSTGRES_PORT:-5432}:5432'
     volumes:
       - picpay-challenge-db:/var/lib/postgresql/data
     networks:

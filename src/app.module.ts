@@ -5,6 +5,8 @@ import { UsersModule } from './users/users.module';
 import { DrizzleModule } from './drizzle/drizzle.module';
 import { TransactionsModule } from './transactions/transactions.module';
 import { AccountsModule } from './accounts/accounts.module';
+import { AuthModule } from './auth/auth.module';
+import { SharedModule } from './shared/shared.module';
 
 @Module({
   imports: [
@@ -13,6 +15,8 @@ import { AccountsModule } from './accounts/accounts.module';
     DrizzleModule,
     TransactionsModule,
     AccountsModule,
+    AuthModule,
+    SharedModule,
   ],
   controllers: [AppController],
   providers: [],

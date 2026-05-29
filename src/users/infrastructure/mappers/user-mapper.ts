@@ -1,4 +1,5 @@
 import { UserResponse } from '../../core/user-response';
+import { UserRole } from '../../core/user-role.enum';
 import { User } from '../../core/user.entity';
 import { UserType } from '../user.model';
 
@@ -19,7 +20,7 @@ export class UserMapper {
       id: type.id!,
       fullName: type.fullName,
       email: type.email,
-      role: type.role!,
+      role: type.role! as UserRole,
       createdAt: type.createdAt!,
       updatedAt: type.updatedAt!,
     };

@@ -4,10 +4,19 @@ import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const configService = app.get(ConfigService);
+
+  const frontEndAddress =
+    configService.get<string>('FRONT_END_ADDRESS') || 'http://localhost:5173';
 
   app.setGlobalPrefix('api/v1.0');
 
-  const configService = app.get(ConfigService);
+  app.enableCors({
+    origin: [frontEndAddress],
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+  });
+
   const port = configService.get<number>('API_PORT') || 3000;
 
   await app.listen(port);

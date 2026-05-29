@@ -8,6 +8,27 @@
       "when": 1777672649050,
       "tag": "0000_dizzy_wilson_fisk",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1777937840266,
+      "tag": "0001_overrated_molly_hayes",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1777938098506,
+      "tag": "0002_wide_tempest",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1778172352977,
+      "tag": "0003_dusty_mongoose",
+      "breakpoints": true
     }
   ]
 }

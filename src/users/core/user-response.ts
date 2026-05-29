@@ -1,8 +1,10 @@
+import { UserRole } from './user-role.enum';
+
 export interface UserResponse {
   id: string;
   fullName: string;
   email: string;
-  role: string;
+  role: UserRole;
   createdAt: Date;
   updatedAt: Date;
 }

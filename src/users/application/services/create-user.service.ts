@@ -5,18 +5,22 @@ import { CreateUserUseCase } from '../../core/use-cases/create-user.use-case';
 import { UserResponse } from '../../core/user-response';
 import { User } from '../../core/user.entity';
 import { IUserRepository } from '../../infrastructure/repositories/users.repository';
+import { IHasherProvider } from '../../../shared/application/providers/hasher.provider';
 
 export class CreateUserService implements CreateUserUseCase {
   constructor(
     private readonly userRepository: IUserRepository,
     private readonly accountsRepository: IAccountsRepository,
+    private readonly hasher: IHasherProvider,
   ) {}
 
   async execute(data: User): Promise<UserResponse> {
+    const hashedPassword = await this.hasher.hash(data.password);
+
     const user = new User(
       data.fullName,
       data.email,
-      data.password,
+      hashedPassword,
       data.role,
       data.cpf,
       data.cnpj,

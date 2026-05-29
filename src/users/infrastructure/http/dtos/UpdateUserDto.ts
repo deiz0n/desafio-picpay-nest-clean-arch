@@ -1,6 +1,6 @@
 import { createZodDto } from 'nestjs-zod';
+import { UserRole } from 'src/users/core/user-role.enum';
 import { z } from 'zod';
-import { UserRole } from '../../core/user-role.enum';
 
 const UpdateUserSchema = z.object({
   fullName: z.string().min(1, 'Full name is required').optional(),

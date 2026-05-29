@@ -13,15 +13,15 @@ import {
 } from '@nestjs/common';
 import type { CreateUserUseCase } from '../../core/use-cases/create-user.use-case';
 import type { GetAllUsersUseCase } from '../../core/use-cases/get-all-users.use-case';
-import { CreateUserDto } from '../dtos/CreateUserDto';
-import { PaginationDto } from '../dtos/PaginationDto';
 import { Public } from '../../../auth/infrastructure/decorators/public.decorator';
 import type { UpdateUserUseCase } from '../../core/use-cases/update-user.use-case';
 import type { GetUserByIdUseCase } from 'src/users/core/use-cases/get-user-by-id.use-case';
-import { UpdateUserDto } from '../dtos/UpdateUserDto';
 import { Roles } from 'src/auth/infrastructure/decorators/roles.decorator';
 import { UserRole } from 'src/users/core/user-role.enum';
 import { User } from 'src/users/core/user.entity';
+import { CreateUserDto } from './dtos/CreateUserDto';
+import { PaginationDto } from './dtos/PaginationDto';
+import { UpdateUserDto } from './dtos/UpdateUserDto';
 
 @Controller('users')
 export class UsersController {

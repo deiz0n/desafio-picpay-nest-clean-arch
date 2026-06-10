@@ -35,13 +35,14 @@ services:
   picpay-challenge-rabbitmq:
     container_name: picpay-challenge-rabbitmq
     image: rabbitmq:3-management-alpine
+    hostname: picpay-challenge-rabbitmq
     env_file:
       - .env
     ports:
       - '${RABBITMQ_PORT:-5672}:5672'
       - '${RABBITMQ_MANAGEMENT_PORT:-15672}:15672'
     volumes:
-      - picpay-challenge-queue:/var/lib/rabbitmq/data
+      - picpay-challenge-queue:/var/lib/rabbitmq
     networks:
       - picpay-challenge-queue-nt
 

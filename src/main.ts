@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
+import { ZodValidationPipe } from 'nestjs-zod';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -10,6 +11,7 @@ async function bootstrap() {
     configService.get<string>('FRONT_END_ADDRESS') || 'http://localhost:5173';
 
   app.setGlobalPrefix('api/v1.0');
+  app.useGlobalPipes(new ZodValidationPipe());
 
   app.enableCors({
     origin: [frontEndAddress],

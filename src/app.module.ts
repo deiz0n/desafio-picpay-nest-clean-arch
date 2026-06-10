@@ -9,6 +9,7 @@ import { AuthModule } from './auth/auth.module';
 import { SharedModule } from './shared/shared.module';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
+import { QueueModule } from './queue/queue.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { APP_GUARD } from '@nestjs/core';
     AccountsModule,
     AuthModule,
     SharedModule,
+    QueueModule,
   ],
   controllers: [AppController],
   providers: [

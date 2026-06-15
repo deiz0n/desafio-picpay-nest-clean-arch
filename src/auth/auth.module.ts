@@ -5,7 +5,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthController } from './infrastructure/http/auth.controller';
 import { LoginService } from './application/services/login.service';
 import { JwtStrategy } from './infrastructure/strategies/jwt.strategy';
-import { JwtAuthGuard } from './infrastructure/guards/jwt-auth.guard';
 import { RolesGuard } from './infrastructure/guards/roles.guard';
 import { UsersModule, USER_REPOSITORY_TOKEN } from '../users/users.module';
 import { UserRepositoryImpl } from '../users/infrastructure/repositories/users.repository';
@@ -39,10 +38,6 @@ import { IHasherProvider } from '../shared/application/providers/hasher.provider
       inject: [USER_REPOSITORY_TOKEN, JwtService, HASHER_PROVIDER_TOKEN],
     },
     JwtStrategy,
-    {
-      provide: APP_GUARD,
-      useClass: JwtAuthGuard,
-    },
     {
       provide: APP_GUARD,
       useClass: RolesGuard,

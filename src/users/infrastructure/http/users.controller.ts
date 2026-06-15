@@ -13,7 +13,6 @@ import {
 } from '@nestjs/common';
 import type { CreateUserUseCase } from '../../core/use-cases/create-user.use-case';
 import type { GetAllUsersUseCase } from '../../core/use-cases/get-all-users.use-case';
-import { Public } from '../../../auth/infrastructure/decorators/public.decorator';
 import type { UpdateUserUseCase } from '../../core/use-cases/update-user.use-case';
 import type { GetUserByIdUseCase } from 'src/users/core/use-cases/get-user-by-id.use-case';
 import { Roles } from 'src/auth/infrastructure/decorators/roles.decorator';
@@ -36,7 +35,6 @@ export class UsersController {
     private readonly updateUserUseCase: UpdateUserUseCase,
   ) {}
 
-  @Public()
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() createDto: CreateUserDto) {

@@ -1,20 +1,43 @@
-import { ExtractJwt, Strategy } from 'passport-jwt';
+import { Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Payload } from 'src/auth/core/entities/payload.entity';
+import { Request } from 'express';
+import { USER_REPOSITORY_TOKEN } from 'src/users/users.module';
+import type { IUserRepository } from 'src/users/infrastructure/repositories/users.repository';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor(configService: ConfigService) {
+  constructor(
+    private readonly configService: ConfigService,
+    @Inject(USER_REPOSITORY_TOKEN)
+    private readonly userRepository: IUserRepository,
+  ) {
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      jwtFromRequest: (req: Request) => {
+        let token = null;
+        if (req && req.cookies) token = req.cookies['access_token'];
+
+        return token;
+      },
       ignoreExpiration: false,
       secretOrKey: configService.get<string>('JWT_SECRET') || 'secretKey123',
     });
   }
 
   async validate(payload: Payload) {
-    return new Payload(payload.userId, payload.email, payload.role);
+    const user = await this.userRepository.findByEmail(payload.email);
+
+    if (!user) throw new UnauthorizedException('User not found');
+
+    return {
+      id: user.id,
+      fullName: user.fullName,
+      email: user.email,
+      role: user.role,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+    };
   }
 }

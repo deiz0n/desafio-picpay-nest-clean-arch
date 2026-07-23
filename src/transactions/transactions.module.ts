@@ -9,6 +9,7 @@ import { HttpCircuitBreaker } from './infrastructure/http/http-circuit-breaker';
 import { IHttpCircuitBreaker } from './infrastructure/http/http-circuit-breaker';
 import { AccountsRepositoryImpl } from '../accounts/infrastructure/repositories/accounts.repository';
 import { SendTransactionService } from './aplication/services/send-transaction.service';
+import { ListTransactionsService } from './aplication/services/list-transactions.service';
 import { IUserRepository } from '../users/infrastructure/repositories/users.repository';
 import { DrizzleDB } from '../drizzle/drizzle.types';
 import { USER_REPOSITORY_TOKEN, UsersModule } from '../users/users.module';
@@ -68,6 +69,13 @@ export const TRANSACTION_REPOSITORY_TOKEN = 'TRANSACTION_REPOSITORY_TOKEN';
         TRANSACTION_REPOSITORY_TOKEN,
         QUEUE_SERVICE_TOKEN,
       ],
+    },
+    {
+      provide: 'ListTransactionsUseCase',
+      useFactory: (transactionRepository: ITransactionRepository) => {
+        return new ListTransactionsService(transactionRepository);
+      },
+      inject: [TRANSACTION_REPOSITORY_TOKEN],
     },
     {
       provide: TRANSACTION_AUTHORIZATION_GATEWAY_TOKEN,

@@ -14,9 +14,10 @@ export class TransactionMapper {
   static toResponse(type: TransactionType): TransactionResponse {
     return {
       id: type.id!,
-      payerId: type.payeeId,
+      payerId: type.payerId,
       payeeId: type.payeeId,
       amount: type.amount,
+      createdAt: type.createdAt ?? null,
     };
   }
 }

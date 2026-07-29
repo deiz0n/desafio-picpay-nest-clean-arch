@@ -1,19 +1,53 @@
 networks:
   picpay-challenge-nt:
     driver: bridge
+  picpay-challenge-queue-nt:
+    name: picpay-challenge-queue-nt
+    driver: bridge
 
 services:
+  picpay-challenge-api:
+    container_name: picpay-challenge-api
+    build: .
+    env_file:
+      - .env
+    ports:
+      - '${API_PORT:-3000}:${API_PORT:-3000}'
+    depends_on:
+      - picpay-challenge-db
+      - picpay-challenge-rabbitmq
+    networks:
+      - picpay-challenge-nt
+      - picpay-challenge-queue-nt
+
   picpay-challenge-db:
     container_name: picpay-challenge-db
     image: postgres:16-alpine
     env_file:
       - .env
     ports:
-      - "${POSTGRES_PORT:-5432}:5432"
+      - '${POSTGRES_PORT:-5432}:5432'
     volumes:
       - picpay-challenge-db:/var/lib/postgresql/data
     networks:
       - picpay-challenge-nt
 
+  picpay-challenge-rabbitmq:
+    container_name: picpay-challenge-rabbitmq
+    image: rabbitmq:3-management-alpine
+    hostname: picpay-challenge-rabbitmq
+    env_file:
+      - .env
+    ports:
+      - '${RABBITMQ_PORT:-5672}:5672'
+      - '${RABBITMQ_MANAGEMENT_PORT:-15672}:15672'
+    volumes:
+      - picpay-challenge-queue:/var/lib/rabbitmq
+    networks:
+      - picpay-challenge-queue-nt
+
 volumes:
   picpay-challenge-db:
+    driver: local
+  picpay-challenge-queue:
+    driver: local

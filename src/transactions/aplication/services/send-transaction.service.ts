@@ -11,6 +11,10 @@ import { UserNotFoundException } from '../../../users/core/errors/UserNotFoundEx
 import { ForbiddenActionException } from '../../core/errors/ForbiddenActionException';
 import { InsufficientBalanceException } from '../../core/errors/InsufficientBalanceException';
 import type { ITransactionRepository } from '../../infrastructure/repositories/transaction.repository';
+import type { IQueueService } from 'src/queue/queue.service';
+import { QUEUE_SERVICE_TOKEN } from 'src/queue/queue.module';
+import { QueueBody } from 'src/queue/queue-body';
+import { UserResponse } from 'src/users/core/user-response';
 
 export class SendTransactionService implements SendTransactionUseCase {
   constructor(
@@ -19,10 +23,15 @@ export class SendTransactionService implements SendTransactionUseCase {
     private readonly transactionAuthorizationGateway: ITransactionAuthorizationGateway,
     @Inject('DRIZZLE') private readonly db: DrizzleDB,
     private readonly transactionRepository: ITransactionRepository,
+    @Inject(QUEUE_SERVICE_TOKEN) private readonly queueService: IQueueService,
   ) {}
 
   async execute(transaction: Transaction): Promise<void> {
-    await this.checkIfUsersAreValid(transaction.payerId, transaction.payeeId);
+    const payerAccount = await this.checkIfUsersAreValid(
+      transaction.payerId,
+      transaction.payeeId,
+    );
+
     await this.checkIfAccountsExists(transaction.payerId, transaction.payeeId);
     await this.checkIfHasEnoughAmount(transaction.payerId, transaction.amount);
 
@@ -59,6 +68,14 @@ export class SendTransactionService implements SendTransactionUseCase {
 
     await this.transactionRepository.save(transaction);
 
+    await this.queueService.sendEmail(
+      new QueueBody(
+        payerAccount.fullName,
+        transaction.amount,
+        payerAccount.email,
+      ),
+    );
+
     return;
   }
 
@@ -88,7 +105,7 @@ export class SendTransactionService implements SendTransactionUseCase {
   private async checkIfUsersAreValid(
     payerId: string,
     payeeId: string,
-  ): Promise<void> {
+  ): Promise<UserResponse> {
     const payer = await this.userRepository.findById(payerId);
     if (!payer)
       throw new UserNotFoundException(
@@ -99,7 +116,10 @@ export class SendTransactionService implements SendTransactionUseCase {
         'Merchants are not allowed to perform transfers, only to receive them',
       );
 
-    if (!(await this.userRepository.findById(payeeId)))
+    const payee = await this.userRepository.findById(payeeId);
+    if (!payee)
       throw new UserNotFoundException('Payee user was not found in the system');
+
+    return payee;
   }
 }

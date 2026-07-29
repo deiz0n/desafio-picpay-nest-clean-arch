@@ -10,6 +10,7 @@ import {
 import { AccountsRepositoryImpl } from '../accounts/infrastructure/repositories/accounts.repository';
 import { UpdateUserService } from './application/services/update-user.service';
 import { GetUserByIdService } from './application/services/get-user-by-id.service';
+import { GetUserByEmailService } from './application/services/get-user-by-email.service';
 import { SharedModule, HASHER_PROVIDER_TOKEN } from '../shared/shared.module';
 import { IHasherProvider } from '../shared/application/providers/hasher.provider';
 
@@ -30,9 +31,17 @@ export const USER_REPOSITORY_TOKEN = 'USER_REPOSITORY_TOKEN';
         accountsRepository: AccountsRepositoryImpl,
         hasher: IHasherProvider,
       ) => {
-        return new CreateUserService(userRepepository, accountsRepository, hasher);
+        return new CreateUserService(
+          userRepepository,
+          accountsRepository,
+          hasher,
+        );
       },
-      inject: [USER_REPOSITORY_TOKEN, ACCOUNT_REPOSITORY_TOKEN, HASHER_PROVIDER_TOKEN],
+      inject: [
+        USER_REPOSITORY_TOKEN,
+        ACCOUNT_REPOSITORY_TOKEN,
+        HASHER_PROVIDER_TOKEN,
+      ],
     },
     {
       provide: 'GetAllUsersUseCase',
@@ -45,6 +54,13 @@ export const USER_REPOSITORY_TOKEN = 'USER_REPOSITORY_TOKEN';
       provide: 'GetUserByIdUseCase',
       useFactory: (userRepository: UserRepositoryImpl) => {
         return new GetUserByIdService(userRepository);
+      },
+      inject: [USER_REPOSITORY_TOKEN],
+    },
+    {
+      provide: 'GetUserByEmailUseCase',
+      useFactory: (userRepository: UserRepositoryImpl) => {
+        return new GetUserByEmailService(userRepository);
       },
       inject: [USER_REPOSITORY_TOKEN],
     },

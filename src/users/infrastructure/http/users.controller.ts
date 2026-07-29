@@ -13,9 +13,9 @@ import {
 } from '@nestjs/common';
 import type { CreateUserUseCase } from '../../core/use-cases/create-user.use-case';
 import type { GetAllUsersUseCase } from '../../core/use-cases/get-all-users.use-case';
-import { Public } from '../../../auth/infrastructure/decorators/public.decorator';
 import type { UpdateUserUseCase } from '../../core/use-cases/update-user.use-case';
 import type { GetUserByIdUseCase } from 'src/users/core/use-cases/get-user-by-id.use-case';
+import type { GetUserByEmailUseCase } from 'src/users/core/use-cases/get-user-by-email.use-case';
 import { Roles } from 'src/auth/infrastructure/decorators/roles.decorator';
 import { UserRole } from 'src/users/core/user-role.enum';
 import { User } from 'src/users/core/user.entity';
@@ -32,11 +32,12 @@ export class UsersController {
     private readonly getAllUsersUseCase: GetAllUsersUseCase,
     @Inject('GetUserByIdUseCase')
     private readonly getUserByIdUseCase: GetUserByIdUseCase,
+    @Inject('GetUserByEmailUseCase')
+    private readonly getUserByEmailUseCase: GetUserByEmailUseCase,
     @Inject('UpdateUserUseCase')
     private readonly updateUserUseCase: UpdateUserUseCase,
   ) {}
 
-  @Public()
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() createDto: CreateUserDto) {
@@ -68,6 +69,17 @@ export class UsersController {
   @HttpCode(HttpStatus.OK)
   async getById(@Param('id', ParseUUIDPipe) id: string) {
     const result = await this.getUserByIdUseCase.execute(id);
+    return {
+      status: HttpStatus.OK,
+      timestamp: new Date().toISOString(),
+      data: result,
+    };
+  }
+
+  @Get('email/:email')
+  @HttpCode(HttpStatus.OK)
+  async getByEmail(@Param('email') email: string) {
+    const result = await this.getUserByEmailUseCase.execute(email);
     return {
       status: HttpStatus.OK,
       timestamp: new Date().toISOString(),

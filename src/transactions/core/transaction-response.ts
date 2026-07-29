@@ -4,5 +4,6 @@ export class TransactionResponse {
     public payerId: string,
     public payeeId: string,
     public amount: number,
+    public createdAt: Date | null,
   ) {}
 }

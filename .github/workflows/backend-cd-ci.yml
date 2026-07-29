@@ -125,7 +125,7 @@ jobs:
           cat > ssm-parameters.json <<'JSON'
           {
             "commands": [
-              "set -euo pipefail",
+              "set -eu",
               "cd /opt/picpay-app",
               "docker compose pull picpay-api",
               "docker compose up -d --no-deps --force-recreate picpay-api",

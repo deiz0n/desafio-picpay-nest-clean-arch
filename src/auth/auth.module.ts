@@ -17,7 +17,7 @@ import { IHasherProvider } from '../shared/application/providers/hasher.provider
     SharedModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
+      useFactory: (configService: ConfigService) => ({
         secret: configService.get<string>('JWT_SECRET') || 'secretKey123',
         signOptions: { expiresIn: '60m' },
       }),

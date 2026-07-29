@@ -2,9 +2,10 @@ import { Inject, Injectable } from '@nestjs/common';
 
 import { ClientProxy } from '@nestjs/microservices';
 import { QueueBody } from './queue-body';
+import { Observable } from 'rxjs';
 
 export interface IQueueService {
-  sendEmail(data: QueueBody): Promise<void>;
+  sendEmail(data: QueueBody): Observable<void>;
 }
 
 @Injectable()
@@ -14,7 +15,7 @@ export class QueueService implements IQueueService {
     private readonly clientEmail: ClientProxy,
   ) {}
 
-  async sendEmail(data: QueueBody): Promise<void> {
-    this.clientEmail.emit('send_email', data);
+  sendEmail(data: QueueBody): Observable<void> {
+    return this.clientEmail.emit<void, QueueBody>('send_email', data);
   }
 }

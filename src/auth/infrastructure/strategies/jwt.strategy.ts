@@ -15,11 +15,11 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     private readonly userRepository: IUserRepository,
   ) {
     super({
-      jwtFromRequest: (req: Request) => {
-        let token = null;
-        if (req && req.cookies) token = req.cookies['access_token'];
+      jwtFromRequest: (req: Request): string | null => {
+        const cookies = req.cookies as unknown as Record<string, unknown>;
+        const token = cookies['access_token'];
 
-        return token;
+        return typeof token === 'string' ? token : null;
       },
       ignoreExpiration: false,
       secretOrKey: configService.get<string>('JWT_SECRET') || 'secretKey123',

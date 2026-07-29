@@ -6,7 +6,6 @@ import {
   HttpStatus,
   Inject,
   Post,
-  Req,
   Res,
   UseGuards,
 } from '@nestjs/common';
@@ -53,7 +52,7 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Get('me')
   @HttpCode(HttpStatus.OK)
-  async getProfile(@CurrentUser() user: UserResponse) {
+  getProfile(@CurrentUser() user: UserResponse) {
     return {
       status: HttpStatus.OK,
       data: user,
@@ -63,7 +62,7 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Post('logout')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async logout(@Res({ passthrough: true }) response: Response) {
+  logout(@Res({ passthrough: true }) response: Response) {
     response.clearCookie('access_token', {
       httpOnly: true,
       secure: this.configService.get<string>('NODE_ENV') === 'production',

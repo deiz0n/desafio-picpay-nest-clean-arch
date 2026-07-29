@@ -68,7 +68,7 @@ export class SendTransactionService implements SendTransactionUseCase {
 
     await this.transactionRepository.save(transaction);
 
-    await this.queueService.sendEmail(
+    this.queueService.sendEmail(
       new QueueBody(
         payerAccount.fullName,
         transaction.amount,

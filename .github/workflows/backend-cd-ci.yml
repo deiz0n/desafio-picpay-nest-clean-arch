@@ -127,10 +127,10 @@ jobs:
             "commands": [
               "set -eu",
               "cd /opt/picpay-app",
-              "docker compose pull picpay-api",
-              "docker compose up -d --no-deps --force-recreate picpay-api",
+             "docker compose -f /opt/picpay-app/compose.yaml pull backend",
+              "docker compose -f /opt/picpay-app/compose.yaml up -d --no-deps --force-recreate backend",
               "for attempt in $(seq 1 30); do if curl -fsS http://127.0.0.1/api/v1.0/health; then docker image prune -f; exit 0; fi; sleep 5; done",
-              "docker compose logs --tail=100 picpay-api",
+              "docker compose -f /opt/picpay-app/compose.yaml logs --tail=100 backend",
               "exit 1"
             ]
           }
